@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/internal/database"
+	"backend/internal/item"
 	transportHttp "backend/internal/transport/http"
 	"net/http"
 
@@ -20,11 +21,18 @@ func (app *App) Run() error {
 			"Version": app.Version,
 		}).Info("Setting up Application")
 
-	_, err := database.NewDatabase()
+	// connect and migrate db
+	db, err := database.NewDatabase()
 
 	if err != nil {
 		return err
 	}
+
+	if err := database.MigrateDB(db); err != nil {
+		return err
+	}
+
+	_ = item.NewService(db)
 
 	handler := transportHttp.NewHandler()
 	handler.SetupRotues()
