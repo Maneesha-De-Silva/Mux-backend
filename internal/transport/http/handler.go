@@ -1,6 +1,7 @@
 package http
 
 import (
+	"backend/internal/types"
 	"encoding/json"
 	"net/http"
 
@@ -34,14 +35,30 @@ func (h *Handler) SetupRotues() {
 	h.Router.Use(LogginMiddleware)
 
 	h.Router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(http.StatusOK)
-		if err := json.NewEncoder(w).Encode(struct {
-			Message string
+		h.HandleSuccessRespose(w, struct {
+			Message string `json:"message"`
 		}{
-			Message: "Api running okay",
-		}); err != nil {
-			panic(err)
-		}
+			Message: "API Running okay",
+		})
 	})
+}
+
+// Handle Success Respose
+func (h *Handler) HandleSuccessRespose(w http.ResponseWriter, resp interface{}) error {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	return json.NewEncoder(w).Encode(resp)
+}
+
+// Handle Error Resposes
+func (h *Handler) HandleErrorRespose(w http.ResponseWriter, message string, err error, errorCode int) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(errorCode)
+
+	if err := json.NewEncoder(w).Encode(types.ErrorResponse{
+		Error:   message,
+		Details: err.Error(),
+	}); err != nil {
+		panic(err)
+	}
 }
