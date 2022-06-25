@@ -1,9 +1,11 @@
 package main
 
 import (
+	"backend/internal/database"
 	transportHttp "backend/internal/transport/http"
-	log "github.com/sirupsen/logrus"
 	"net/http"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type App struct {
@@ -17,6 +19,12 @@ func (app *App) Run() error {
 			"Name":    app.Name,
 			"Version": app.Version,
 		}).Info("Setting up Application")
+
+	_, err := database.NewDatabase()
+
+	if err != nil {
+		return err
+	}
 
 	handler := transportHttp.NewHandler()
 	handler.SetupRotues()
