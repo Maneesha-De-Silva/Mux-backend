@@ -37,7 +37,8 @@ func LogginMiddleware(next http.Handler) http.Handler {
 func (h *Handler) SetupRotues() {
 	h.Router = mux.NewRouter()
 	h.Router.Use(LogginMiddleware)
-	h.Router.HandleFunc("/items", h.FetchEvents).Methods("GET")
+	h.Router.HandleFunc("/items", h.FetchItems).Methods("GET")
+	h.Router.HandleFunc("/items/create", h.CreateItems).Methods("POST")
 
 	h.Router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
 		h.HandleSuccessRespose(w, struct {
