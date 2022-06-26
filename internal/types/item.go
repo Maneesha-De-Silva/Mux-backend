@@ -16,16 +16,15 @@ type Model struct {
 
 type Item struct {
 	Model
-	Title       string  `json:"title"`
-	ServiceTime string  `json:"serviceTime"`
-	DeliveryFee float64 `json:"deliveryFee"`
-	Category    string  `json:"category"`
-	Cuisine     string  `json:"cuisine"`
-	Rating      int     `json:"rating"`
-	Price       int     `json:"price"`
-	CoverSrc    string  `json:"coverSrc"`
-	Stock       int     `json:"stock"`
+	Title        string `json:"title"`
+	Price        int    `json:"price"`
+	Stock        int    `json:"stock"`
+	ReorderLevel int    `json:"reorder_level"`
+	Description  string `json:"description"`
+	CoverSrc     string `json:"coverSrc"`
 }
+
+// Item name, price, quantity, reorder level, description
 
 type Purcahse struct {
 	ItemID int `json:"item_id"`

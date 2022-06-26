@@ -74,7 +74,7 @@ func (h *Handler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
 		h.ItemService.SavePurchase(purcahseRequest)
 		h.ItemService.SaveItem(item)
 
-		if item.Stock < 5 {
+		if item.Stock < item.ReorderLevel {
 			msg := fmt.Sprintf("The product %s is running out of suplies, please update the stock current stock is = %d", item.Title, item.Stock)
 			mail.SendMail("z9fr@protonmail.com", msg) // add admin email here
 		}
