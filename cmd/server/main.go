@@ -32,9 +32,9 @@ func (app *App) Run() error {
 		return err
 	}
 
-	_ = item.NewService(db)
+	transportService := item.NewService(db)
 
-	handler := transportHttp.NewHandler()
+	handler := transportHttp.NewHandler(transportService)
 	handler.SetupRotues()
 
 	if err := http.ListenAndServe(":4000", handler.Router); err != nil {

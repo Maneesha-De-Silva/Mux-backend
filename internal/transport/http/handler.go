@@ -1,6 +1,7 @@
 package http
 
 import (
+	"backend/internal/item"
 	"backend/internal/types"
 	"encoding/json"
 	"net/http"
@@ -10,11 +11,14 @@ import (
 )
 
 type Handler struct {
-	Router *mux.Router
+	Router      *mux.Router
+	ItemService *item.Service
 }
 
-func NewHandler() *Handler {
-	return &Handler{}
+func NewHandler(itemService *item.Service) *Handler {
+	return &Handler{
+		ItemService: itemService,
+	}
 }
 
 func LogginMiddleware(next http.Handler) http.Handler {
@@ -33,6 +37,7 @@ func LogginMiddleware(next http.Handler) http.Handler {
 func (h *Handler) SetupRotues() {
 	h.Router = mux.NewRouter()
 	h.Router.Use(LogginMiddleware)
+	h.Router.HandleFunc("/items", h.FetchEvents).Methods("GET")
 
 	h.Router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
 		h.HandleSuccessRespose(w, struct {
