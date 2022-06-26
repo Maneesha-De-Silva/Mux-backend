@@ -43,6 +43,8 @@ func (h *Handler) SetupRotues() {
 	h.Router.HandleFunc("/items/create", h.CreateItems).Methods("POST")
 	h.Router.HandleFunc("/items/update", h.CreateItems).Methods("PATCH")
 
+	h.Router.HandleFunc("/order/place", h.PlaceOrder).Methods("POST")
+
 	h.Router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
 		h.HandleSuccessRespose(w, struct {
 			Message string `json:"message"`

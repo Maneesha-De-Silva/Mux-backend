@@ -3,17 +3,20 @@ package http
 import (
 	"backend/internal/types"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
 )
 
+// get all the items
 func (h *Handler) FetchItems(w http.ResponseWriter, r *http.Request) {
 	items := h.ItemService.GetPosts()
 	h.HandleSuccessRespose(w, items)
 }
 
+// create a new item
 func (h *Handler) CreateItems(w http.ResponseWriter, r *http.Request) {
 	var newItem types.Item
 
@@ -22,7 +25,7 @@ func (h *Handler) CreateItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	item, err := h.ItemService.CreateItem(newItem)
+	item, err := h.ItemService.SaveItem(newItem)
 
 	if err != nil {
 		h.HandleErrorRespose(w, "Unable to save the post", err, http.StatusBadRequest)
@@ -32,6 +35,7 @@ func (h *Handler) CreateItems(w http.ResponseWriter, r *http.Request) {
 	h.HandleSuccessRespose(w, item)
 }
 
+// get item details by ID
 func (h *Handler) GetItemDetails(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -47,4 +51,34 @@ func (h *Handler) GetItemDetails(w http.ResponseWriter, r *http.Request) {
 
 	h.HandleSuccessRespose(w, details)
 
+}
+
+// Create a order
+func (h *Handler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
+	var purcahseRequest types.Purcahse
+
+	if err := json.NewDecoder(r.Body).Decode(&purcahseRequest); err != nil {
+		h.HandleErrorRespose(w, "Failed to decode JSON body", err, http.StatusInternalServerError)
+		return
+	}
+
+	item := h.ItemService.GetItemByID(uint64(purcahseRequest.ItemID))
+
+	if item.Stock > purcahseRequest.Amount {
+		// update the new item stock
+		item.Stock = item.Stock - purcahseRequest.Amount
+
+		// save purcahse request
+		h.ItemService.SavePurchase(purcahseRequest)
+		h.ItemService.SaveItem(item)
+
+		h.HandleSuccessRespose(w, struct {
+			Message string `json:"message"`
+		}{
+			Message: "success",
+		})
+		return
+	}
+
+	h.HandleErrorRespose(w, "Unable to purcahse", fmt.Errorf("Not enough stock avalible"), http.StatusBadRequest)
 }

@@ -14,3 +14,8 @@ type Item struct {
 	CoverSrc    string  `json:"coverSrc"`
 	Stock       int     `json:"stock"`
 }
+
+type Purcahse struct {
+	ItemID int `json:"item_id"`
+	Amount int `json:"amount"`
+}
