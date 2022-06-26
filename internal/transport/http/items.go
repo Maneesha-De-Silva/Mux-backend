@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"backend/internal/mail"
+
 	"github.com/gorilla/mux"
 )
 
@@ -71,6 +73,11 @@ func (h *Handler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
 		// save purcahse request
 		h.ItemService.SavePurchase(purcahseRequest)
 		h.ItemService.SaveItem(item)
+
+		if item.Stock < 5 {
+			msg := fmt.Sprintf("The product %s is running out of suplies, please update the stock current stock is = %d", item.Title, item.Stock)
+			mail.SendMail("z9fr@protonmail.com", msg) // add admin email here
+		}
 
 		h.HandleSuccessRespose(w, struct {
 			Message string `json:"message"`
