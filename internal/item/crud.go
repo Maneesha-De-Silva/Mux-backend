@@ -14,3 +14,9 @@ func (s *Service) GetPosts() []types.Item {
 	s.DB.Debug().Find(&items)
 	return items
 }
+
+func (s *Service) GetItemByID(id uint64) types.Item {
+	var item types.Item
+	s.DB.Debug().Where("id = ?", id).First(&item)
+	return item
+}

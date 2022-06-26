@@ -6,6 +6,7 @@ import (
 	transportHttp "backend/internal/transport/http"
 	"net/http"
 
+	"github.com/rs/cors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -37,7 +38,22 @@ func (app *App) Run() error {
 	handler := transportHttp.NewHandler(transportService)
 	handler.SetupRotues()
 
-	if err := http.ListenAndServe(":4000", handler.Router); err != nil {
+	corsOpts := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: []string{
+			http.MethodGet,
+			http.MethodPost,
+			http.MethodPut,
+			http.MethodPatch,
+			http.MethodDelete,
+			http.MethodOptions,
+			http.MethodHead,
+		},
+		AllowedHeaders: []string{
+			"*",
+		},
+	})
+	if err := http.ListenAndServe(":4000", corsOpts.Handler(handler.Router)); err != nil {
 		return err
 	}
 

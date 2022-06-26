@@ -4,6 +4,9 @@ import (
 	"backend/internal/types"
 	"encoding/json"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 func (h *Handler) FetchItems(w http.ResponseWriter, r *http.Request) {
@@ -27,4 +30,21 @@ func (h *Handler) CreateItems(w http.ResponseWriter, r *http.Request) {
 	}
 
 	h.HandleSuccessRespose(w, item)
+}
+
+func (h *Handler) GetItemDetails(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	i, err := strconv.ParseUint(id, 10, 64)
+
+	if err != nil {
+		h.HandleErrorRespose(w, "Unable to pass int", err, http.StatusBadRequest)
+		return
+	}
+
+	details := h.ItemService.GetItemByID(i)
+
+	h.HandleSuccessRespose(w, details)
+
 }

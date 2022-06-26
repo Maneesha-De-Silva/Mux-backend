@@ -12,4 +12,5 @@ type Item struct {
 	Rating      int     `json:"rating"`
 	Price       int     `json:"price"`
 	CoverSrc    string  `json:"coverSrc"`
+	Stock       int     `json:"stock"`
 }
