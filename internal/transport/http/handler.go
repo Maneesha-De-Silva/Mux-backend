@@ -40,6 +40,8 @@ func (h *Handler) SetupRotues() {
 	h.Router.Use(LogginMiddleware)
 	h.Router.HandleFunc("/items", h.FetchItems).Methods("GET")
 	h.Router.HandleFunc("/item/{id}", h.GetItemDetails).Methods("GET")
+	h.Router.HandleFunc("/item/delete/{id}", h.DeleteItem).Methods("DELETE")
+
 	h.Router.HandleFunc("/items/create", h.CreateItems).Methods("POST")
 	h.Router.HandleFunc("/items/update", h.CreateItems).Methods("PATCH")
 

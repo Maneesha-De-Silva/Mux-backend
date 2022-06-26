@@ -21,6 +21,6 @@ func (s *Service) GetItemByID(id uint64) types.Item {
 	return item
 }
 
-func (s *Service) PlaceOrder() {
-
+func (s *Service) DeleteItem(id uint64) {
+	s.DB.Debug().Delete(&types.Item{}, id)
 }

@@ -89,3 +89,23 @@ func (h *Handler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
 
 	h.HandleErrorRespose(w, "Unable to purcahse", fmt.Errorf("Not enough stock avalible"), http.StatusBadRequest)
 }
+
+// delete a item
+func (h *Handler) DeleteItem(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	i, err := strconv.ParseUint(id, 10, 64)
+
+	if err != nil {
+		h.HandleErrorRespose(w, "Unable to pass int", err, http.StatusBadRequest)
+		return
+	}
+
+	h.ItemService.DeleteItem(i)
+	h.HandleSuccessRespose(w, struct {
+		Message string `json:"message"`
+	}{
+		Message: "Success",
+	})
+}
