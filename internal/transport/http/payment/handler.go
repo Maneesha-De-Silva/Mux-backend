@@ -1,7 +1,7 @@
-package http
+package payment
 
 import (
-	"backend/internal/item"
+	"backend/internal/payment"
 	"backend/internal/types"
 	"encoding/json"
 	"net/http"
@@ -11,13 +11,13 @@ import (
 )
 
 type Handler struct {
-	Router      *mux.Router
-	ItemService *item.Service
+	Router         *mux.Router
+	PaymentService *payment.Service
 }
 
-func NewHandler(itemService *item.Service) *Handler {
+func NewHandler(paymentService *payment.Service) *Handler {
 	return &Handler{
-		ItemService: itemService,
+		PaymentService: paymentService,
 	}
 }
 
@@ -38,14 +38,9 @@ func (h *Handler) SetupRotues() {
 	h.Router = mux.NewRouter()
 
 	h.Router.Use(LogginMiddleware)
-	h.Router.HandleFunc("/items", h.FetchItems).Methods("GET")
-	h.Router.HandleFunc("/item/{id}", h.GetItemDetails).Methods("GET")
-	h.Router.HandleFunc("/item/delete/{id}", h.DeleteItem).Methods("DELETE")
-
-	h.Router.HandleFunc("/items/create", h.CreateItems).Methods("POST")
-	h.Router.HandleFunc("/items/update", h.CreateItems).Methods("PATCH")
-
-	h.Router.HandleFunc("/order/place", h.PlaceOrder).Methods("POST")
+	h.Router.HandleFunc("/payments/create", h.CreatePayment).Methods("POST")
+	h.Router.HandleFunc("/payment/{id}", h.GetPaymentDetails).Methods("GET")
+	h.Router.HandleFunc("/payment", h.FetchPayments).Methods("GET")
 
 	h.Router.HandleFunc("/api/health", func(w http.ResponseWriter, r *http.Request) {
 		h.HandleSuccessRespose(w, struct {

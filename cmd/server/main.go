@@ -2,8 +2,14 @@ package main
 
 import (
 	"backend/internal/database"
+	"backend/internal/employee"
 	"backend/internal/item"
-	transportHttp "backend/internal/transport/http"
+
+	transportHttp  {
+		"backend/internal/transport/http/item", 
+	"backend/internal/transport/http/employee"
+	}
+
 	"net/http"
 
 	"github.com/rs/cors"
@@ -34,9 +40,13 @@ func (app *App) Run() error {
 	}
 
 	transportService := item.NewService(db)
+	transportService1 := employee.NewService(db)
 
 	handler := transportHttp.NewHandler(transportService)
 	handler.SetupRotues()
+
+	handler1 := transportHttp.NewHandler(transportService1)
+	handler1.SetupRotues()
 
 	corsOpts := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},

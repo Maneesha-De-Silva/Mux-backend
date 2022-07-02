@@ -1,4 +1,4 @@
-package http
+package item
 
 import (
 	"backend/internal/types"
@@ -87,7 +87,7 @@ func (h *Handler) PlaceOrder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.HandleErrorRespose(w, "Unable to purcahse", fmt.Errorf("Not enough stock avalible"), http.StatusBadRequest)
+	h.HandleErrorRespose(w, "Unable to purcahse", fmt.Errorf("not enough stock avalible"), http.StatusBadRequest)
 }
 
 // delete a item
@@ -109,3 +109,4 @@ func (h *Handler) DeleteItem(w http.ResponseWriter, r *http.Request) {
 		Message: "Success",
 	})
 }
+
